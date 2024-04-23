@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LanternCheckpoint : MonoBehaviour
 {
+    [SerializeField] private TextMeshPro textIndicator;
+
     [SerializeField] private int matchesNeededToActivate;
     private int currentAmountOfMatches;
 
@@ -34,6 +37,8 @@ public class LanternCheckpoint : MonoBehaviour
             print("Added " + amountToAdd + " Matches to lantern, matches needed to activate: " + amountLeftToActivate);
         }
 
+        UpdateText();
+
         return matchesAdded;
     }
 
@@ -43,5 +48,17 @@ public class LanternCheckpoint : MonoBehaviour
         GetComponent<SpriteRenderer>().color = Color.yellow;
         currentAmountOfMatches = matchesNeededToActivate;
         activated = true;
+    }
+
+    private void UpdateText()
+    {
+        if (amountLeftToActivate == 0)
+        {
+            textIndicator.gameObject.SetActive(false);
+        }
+        else
+        {
+            textIndicator.text = amountLeftToActivate.ToString();
+        } 
     }
 }
