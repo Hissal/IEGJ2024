@@ -15,5 +15,4 @@ public class MainMenu_Controller : MonoBehaviour
         Application.Quit();
     }
         
-    }
 }
