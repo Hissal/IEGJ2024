@@ -93,15 +93,17 @@ public class ChildMovement : MonoBehaviour
 
         IEnumerator FlipRoutine(float goalScale)
         {
+            float flipDelta = XScale * flipSpeed;
+
             while (transform.localScale.x > goalScale && !facingRight || transform.localScale.x < goalScale && facingRight)
             {
                 if (goalScale > currentScale.x)
                 {
-                    currentScale.x += flipSpeed;
+                    currentScale.x += flipDelta;
                 }
                 else
                 {
-                    currentScale.x -= flipSpeed;
+                    currentScale.x -= flipDelta;
                 }
 
                 gameObject.transform.localScale = currentScale;
