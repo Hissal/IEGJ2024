@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LanternCheckpoint : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class LanternCheckpoint : MonoBehaviour
     private int amountLeftToActivate => matchesNeededToActivate - currentAmountOfMatches;
     public bool activated { get; private set; }
 
+    public UnityEvent onActivate;
 
     private void Start()
     {
@@ -56,6 +58,7 @@ public class LanternCheckpoint : MonoBehaviour
         lightObj.SetActive(true);
         currentAmountOfMatches = matchesNeededToActivate;
         activated = true;
+        onActivate.Invoke();
     }
 
     private void UpdateText()

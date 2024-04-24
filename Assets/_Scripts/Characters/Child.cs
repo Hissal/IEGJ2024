@@ -6,7 +6,7 @@ public class Child : CharacterBase
 {
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && active)
+        if (Input.GetKeyDown(KeyCode.E) && active)
         {
             CharacterSwapper.Instance.SwapCharacter(CharacterSwapper.Character.Teddy);
         }
@@ -15,11 +15,13 @@ public class Child : CharacterBase
     public override void SwapTo()
     {
         // Swap to Child
+        CharacterSwapper.Instance.SwapWorld(CharacterSwapper.Character.Child);
         base.SwapTo();
     }
 
     public override void SwapOff()
     {
+        movementScript.rb.velocity = Vector3.zero;
         // Swap off Child
         base.SwapOff();
     }

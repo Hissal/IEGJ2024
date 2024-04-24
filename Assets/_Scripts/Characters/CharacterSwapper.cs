@@ -7,6 +7,9 @@ public class CharacterSwapper : MonoBehaviour
 {
     public static CharacterSwapper Instance;
 
+    [SerializeField] private GameObject lightWorld;
+    [SerializeField] private GameObject darkWorld;
+
     private void Awake()
     {
         Instance = this;
@@ -54,5 +57,22 @@ public class CharacterSwapper : MonoBehaviour
         }
 
         Debug.LogWarning("Could not find a character to swap to");
+    }
+
+    public void SwapWorld(Character character)
+    {
+        switch (character)
+        {
+            case Character.Child:
+                lightWorld.SetActive(false);
+                darkWorld.SetActive(true);
+                break;
+            case Character.Teddy:
+                lightWorld.SetActive(true);
+                darkWorld.SetActive(false);
+                break;
+            default:
+                break;
+        }
     }
 }

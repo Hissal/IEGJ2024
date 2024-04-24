@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ChildMovement : MonoBehaviour
 {
@@ -21,33 +22,52 @@ public class ChildMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float flipSpeed = 0.01f;
 
+    private Animator anim;
+
     public bool active;
     bool facingRight = true;
+
+    bool jumped;
+    bool wasGrounded;
 
     private float XScale;
 
     private void Awake()
     {
         XScale = transform.localScale.x;
+        anim = GetComponent<Animator>();
     }
 
     // Player Movement
     private void Update()
     {
+        if (!wasGrounded && isGrounded() && jumped)
+        {
+            anim.SetTrigger("jumping");
+            jumped = false;
+        }
+
+        wasGrounded = isGrounded();
+
         if (!active) return;
+
 
         // Horizontal Movement
         Move = Input.GetAxisRaw("Horizontal");
 
         rb.velocity = new Vector3(Move * speed, rb.velocity.y, 0);
+        anim.SetFloat("walking", Mathf.Abs(rb.velocity.x));
+
         // Vertical Movement
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
+            anim.SetTrigger("jumping");
             jumping = true;
+            jumped = true;
             jumpTime = 0;
         }
 
-        if(jumping)
+        if (jumping)
         {
             rb.velocity = new Vector3(rb.velocity.x, jumpAmount, 0);
             jumpTime += Time.deltaTime;
@@ -65,6 +85,11 @@ public class ChildMovement : MonoBehaviour
         else if (Move > 0 && !facingRight)
         {
             Flip();
+        }
+
+        if (transform.position.y <= -20f)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 
