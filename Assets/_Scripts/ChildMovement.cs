@@ -51,12 +51,8 @@ public class ChildMovement : MonoBehaviour
 
         if (!active) return;
 
-
         // Horizontal Movement
         Move = Input.GetAxisRaw("Horizontal");
-
-        rb.velocity = new Vector3(Move * speed, rb.velocity.y, 0);
-        anim.SetFloat("walking", Mathf.Abs(rb.velocity.x));
 
         // Vertical Movement
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
@@ -91,6 +87,12 @@ public class ChildMovement : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        rb.velocity = new Vector3(Move * speed, rb.velocity.y, 0);
+        anim.SetFloat("walking", Mathf.Abs(rb.velocity.x));
     }
 
     // Ground Check
