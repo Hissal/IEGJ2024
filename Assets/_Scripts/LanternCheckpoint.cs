@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class LanternCheckpoint : MonoBehaviour
 {
+    [SerializeField] private GameObject lightObj;
     [SerializeField] private TextMeshPro textIndicator;
 
     [SerializeField] private int matchesNeededToActivate;
@@ -13,6 +14,12 @@ public class LanternCheckpoint : MonoBehaviour
     private int amountLeftToActivate => matchesNeededToActivate - currentAmountOfMatches;
     public bool activated { get; private set; }
 
+
+    private void Start()
+    {
+        lightObj.SetActive(false);
+        textIndicator.text = matchesNeededToActivate.ToString();
+    }
 
     /// <summary>
     /// Add Matches to the Lantern
@@ -45,7 +52,8 @@ public class LanternCheckpoint : MonoBehaviour
     private void Activate()
     {
         print("Lantern activated");
-        GetComponent<SpriteRenderer>().color = Color.yellow;
+        // GetComponent<SpriteRenderer>().color = Color.yellow;
+        lightObj.SetActive(true);
         currentAmountOfMatches = matchesNeededToActivate;
         activated = true;
     }

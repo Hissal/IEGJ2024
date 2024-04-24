@@ -5,23 +5,32 @@ using UnityEngine;
 public class ChildMovement : MonoBehaviour
 {
     [Header("Jump Variables")]
-    public Rigidbody2D rb;
+    public Rigidbody rb;
     public float buttonTime = 0.3f;
     public float jumpAmount;
     float jumpTime;
     bool jumping;
 
     [Header("Ground Check")]
-    public Vector2 boxSize;
+    public Vector3 boxSize;
     public float castDistance;
     public LayerMask groundLayer;
 
     [Header("Move Variables")]
     [SerializeField] private float Move;
     [SerializeField] private float speed;
+    [SerializeField] private float flipSpeed = 0.01f;
 
     public bool active;
-    
+    bool facingRight = true;
+
+    private float XScale;
+
+    private void Awake()
+    {
+        XScale = transform.localScale.x;
+    }
+
     // Player Movement
     private void Update()
     {
@@ -30,7 +39,7 @@ public class ChildMovement : MonoBehaviour
         // Horizontal Movement
         Move = Input.GetAxisRaw("Horizontal");
 
-        rb.velocity = new Vector2(Move * speed, rb.velocity.y);
+        rb.velocity = new Vector3(Move * speed, rb.velocity.y, 0);
         // Vertical Movement
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
@@ -40,7 +49,7 @@ public class ChildMovement : MonoBehaviour
 
         if(jumping)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpAmount);
+            rb.velocity = new Vector3(rb.velocity.x, jumpAmount, 0);
             jumpTime += Time.deltaTime;
         }
 
@@ -48,18 +57,58 @@ public class ChildMovement : MonoBehaviour
         {
             jumping = false;
         }
+
+        if (Move < 0 && facingRight)
+        {
+            Flip();
+        }
+        else if (Move > 0 && !facingRight)
+        {
+            Flip();
+        }
     }
 
     // Ground Check
     public bool isGrounded()
     {
-        if(Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, castDistance, groundLayer))
+        if(Physics.BoxCast(transform.position, boxSize, -transform.up, Quaternion.identity, castDistance, groundLayer))
         {
             return true;
         }
         else
         {
             return false;
+        }
+    }
+
+    void Flip()
+    {
+        float goalScale = XScale;
+        if (facingRight) goalScale = -XScale;
+
+        Vector3 currentScale = gameObject.transform.localScale;
+        facingRight = !facingRight;
+
+        StartCoroutine(FlipRoutine(goalScale));
+
+        IEnumerator FlipRoutine(float goalScale)
+        {
+            while (transform.localScale.x > goalScale && !facingRight || transform.localScale.x < goalScale && facingRight)
+            {
+                if (goalScale > currentScale.x)
+                {
+                    currentScale.x += flipSpeed;
+                }
+                else
+                {
+                    currentScale.x -= flipSpeed;
+                }
+
+                gameObject.transform.localScale = currentScale;
+                yield return null;
+            }
+            currentScale.x = goalScale;
+            gameObject.transform.localScale = currentScale;
         }
     }
 
